@@ -133,8 +133,9 @@ def format_last_exception():
 
 # test if a command exists, don't print output
 def try_command(command):
+    return True
     try:
-        subprocess.check_call(["which", command], shell=False,
+        subprocess.check_call(["which", command.split(' ')[0]], shell=True,
                               stdout=subprocess.DEVNULL,
                               stderr=subprocess.DEVNULL)
         return True
