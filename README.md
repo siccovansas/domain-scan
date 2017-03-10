@@ -1,3 +1,5 @@
+[![Dependency Status](https://gemnasium.com/badges/github.com/18F/domain-scan.svg)](https://gemnasium.com/github.com/18F/domain-scan)
+
 ## A domain scanner
 
 Scans domains for data on their HTTPS configuration and assorted other things.
@@ -19,6 +21,7 @@ pip install -r requirements.txt
 The individual scanners each require their own dependencies. You only need to have the dependencies installed for the scanners you plan to use.
 
 * `inspect` scanner: **Ruby** and **[site-inspector](https://github.com/benbalter/site-inspector)**, version **1.0.2 only**.
+* `pshtt` scanner: **Python 2** and **[pshtt](https://github.com/dhs-ncats/pshtt)**, ideally installed with `pyenv` via `pip install pshtt`.
 * `tls` scanner: **Go** and **[ssllabs-scan](https://github.com/ssllabs/ssllabs-scan)**, stable branch.
 * `sslyze` scanner: **Python 2** and **[sslyze](https://github.com/nabla-c0d3/sslyze)**, ideally installed with `pyenv` via `pip install sslyze`.
 * `pageload` scanner: **Node** and **[phantomas](https://www.npmjs.com/package/phantomas)**, installed through npm.
@@ -78,6 +81,7 @@ Parallelization will also cause the resulting domains to be written in an unpred
 **Scanners:**
 
 * `inspect` - HTTP/HTTPS/HSTS configuration.
+* `pshtt` - HTTP/HTTPS/HSTS configuration with the python-only [`pshtt`](https://github.com/dhs-ncats/pshtt) tool.
 * `tls` - TLS configuration, using the [SSL Labs API](https://github.com/ssllabs/ssllabs-scan/blob/stable/ssllabs-api-docs.md).
 * `sslyze` - TLS configuration, using the local [`sslyze`](https://github.com/nabla-c0d3/sslyze) command line tool.
 * `analytics` - Participation in an analytics program.
@@ -148,6 +152,7 @@ Usage:
 Where source is one of:
 
 * `censys` - Walks the [Censys.io API](https://censys.io/api), which has hostnames gathered from observed certificates. Censys provides certificates observed from a nightly zmap scan of the IPv4 space, as well as certificates published to public Certificate Transparency logs.
+* `url` - Given a path to a CSV, reads it and applies deduping and filtering logic. Its only option is `--url`, which can be a URL (starts with `http:` or `https:`) or a local path.
 
 General options:
 
@@ -197,7 +202,9 @@ Once those are set up, copy the `.env.example` file, rename it `.env` and fill i
 
 A brief note on redirects:
 
-For the accessibility scans we're running at 18F, we're using the `inspect` scanner to follow redirects _before_ the accessibility scan runs. For example, if aaa.gov redirects to bbb.gov, `pa11y` will run against bbb.gov (but the result will be recorded for aaa.gov).
+For the accessibility scans we're running at 18F, we're using the `inspect` scanner to follow redirects _before_ the accessibility scan runs.  Pulse.cio.gov is set up to show accessibility scans for live, non-redirecting sites.  For example, if aaa.gov redirects to bbb.gov, we will show results for bbb.gov on the site, but not aaa.gov.  
+
+However, if you want to include results for redirecting site, note the following.  For example, if aaa.gov redirects to bbb.gov, `pa11y` will run against bbb.gov (but the result will be recorded for aaa.gov).
 
 In order to get the benefits of the `inspect` scanner, all `a11y` scans must include it. For example, to scan gsa.gov:
 
